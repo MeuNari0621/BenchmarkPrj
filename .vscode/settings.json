@@ -22,7 +22,8 @@
         ]
     },
     "gtest-adapter.debugConfig": [
-        "LightScheduler"
+        "LightScheduler",
+        "LightControllerSpy"
     ],
     "gtest-adapter.supportLocation": true,
     "files.associations": {

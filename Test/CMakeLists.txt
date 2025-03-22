@@ -15,11 +15,26 @@ FetchContent_MakeAvailable(googletest)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -O0 -g") # -O0: 最適化を無効, -g: デバッグ情報
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage") # カバレッジ用
 
+
+# LightControllerSpyのテスト
+# ソースファイルの変数化
+set(TEST_SOURCE_FILE test_LightControllerSpy.cpp)
+get_filename_component(target ${TEST_SOURCE_FILE} NAME_WE)
+add_executable(${target} ${TEST_SOURCE_FILE})
+target_link_libraries(${target} gtest_main LightSchedulerLib )
+set(INCLUDE_DIRS ./SPY ../src/APP/INC ../src/DRV/INC ../src/RTOS)
+target_include_directories(${target} PUBLIC ${INCLUDE_DIRS})
+include(GoogleTest)
+gtest_discover_tests(${target})
+
 # LightSchedulerのテスト
 # ソースファイルの変数化
 set(TEST_SOURCE_FILE test_LightScheduler.cpp)
 get_filename_component(target ${TEST_SOURCE_FILE} NAME_WE)
 add_executable(${target} ${TEST_SOURCE_FILE})
 target_link_libraries(${target} gtest_main LightSchedulerLib )
+set(INCLUDE_DIRS ./SPY ../src/APP/INC ../src/DRV/INC ../src/RTOS)
+target_include_directories(${target} PUBLIC ${INCLUDE_DIRS})
+include(GoogleTest)
 include(GoogleTest)
 gtest_discover_tests(${target})

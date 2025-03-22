@@ -5,7 +5,9 @@ DEFINE_FFF_GLOBALS;
 
 //テスト対象をinclude
 extern "C" {
-#include "../src/APP/SRC/LightScheduler.c"
+#include "LightScheduler.h"
+#include "LightControllerSpy.h"
+#include "TimeService.h"
 }
 
 //FFFによるFAKE定義
@@ -15,11 +17,16 @@ FAKE_VOID_FUNC(TimeService_GetTime, Day*, MinuteOfDay*);
 
 class LightScheduler : public ::testing::Test {
     protected:
-        virtual void SetUp(){
-        }
+    virtual void SetUp(){
+        LightControllerSpy_Create();
+    }
+    virtual void TearDown(){
+        LightControllerSpy_Destroy();
+    }
     };
 
-TEST_F(LightScheduler, DISABLED_ScheduleOnEverydayNotTimeYet){
+#if 0
+TEST_F(LightScheduler, ScheduleOnEverydayNotTimeYet){
     //Arrange
     LightScheduler_ScheduleTurnON(LIGHT_ID_3, EVERYDAY, 1200);
     //月曜日、1199分にセット(TODO)
@@ -31,3 +38,16 @@ TEST_F(LightScheduler, DISABLED_ScheduleOnEverydayNotTimeYet){
     //LightIdはUNKNOWN, LightStateはUNKNOWNであること
 
 }
+#endif
+
+TEST_F(LightScheduler, NoChangeToLightsDuringInitialization){
+    //Arrange
+
+    //Act
+
+    //Assert
+    //LightIdはUNKNOWN, LightStateはUNKNOWNであること
+    EXPECT_EQ(LIGHT_ID_UNKNOWN, LightControllerSpy_GetLastId());
+    EXPECT_EQ(LIGHT_STATE_UNKNOWN, LightControllerSpy_GetLastState());
+}
+

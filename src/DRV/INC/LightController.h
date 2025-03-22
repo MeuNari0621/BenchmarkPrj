@@ -1,4 +1,5 @@
 //type
+#if 0
 typedef enum{
     LIGHT_ID_UNKNOWN,
     LIGHT_ID_0,
@@ -20,6 +21,6 @@ typedef enum{
     LIGHT_STATE_OFF,
     LIGHT_STATE_ON
 }LightState;
-
+#endif
 //extern
 
