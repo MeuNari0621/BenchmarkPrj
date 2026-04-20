@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(EmbeddedAutoHeadlampBenchmark LANGUAGES C CXX)
+project(EmbeddedACCBenchmark LANGUAGES C CXX)
 
 enable_testing()
 
@@ -8,14 +8,18 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(auto_headlamp_controller STATIC
-    src/auto_headlamp_controller.c
+# ACC Controller library
+add_library(acc_controller STATIC
+    src/acc_controller.c
 )
 
-target_include_directories(auto_headlamp_controller PUBLIC
+target_include_directories(acc_controller PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+target_link_libraries(acc_controller PRIVATE m)
+
+# Google Test
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -26,19 +30,20 @@ if(WIN32)
 endif()
 FetchContent_MakeAvailable(googletest)
 
-add_executable(test_auto_headlamp_controller
-    test/test_auto_headlamp_controller.cpp
+# Test executable
+add_executable(test_acc_controller
+    test/test_acc_controller.cpp
 )
 
-target_link_libraries(test_auto_headlamp_controller
+target_link_libraries(test_acc_controller
     PRIVATE
-    auto_headlamp_controller
+    acc_controller
     gtest_main
 )
 
-target_include_directories(test_auto_headlamp_controller PRIVATE
+target_include_directories(test_acc_controller PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 include(GoogleTest)
-gtest_discover_tests(test_auto_headlamp_controller)
+gtest_discover_tests(test_acc_controller)
