@@ -64,11 +64,6 @@ void AHC_Update(AHC_Controller* controller, const AHC_Input* input, uint32_t ela
         return;
     }
 
-    if (!controller->has_valid_input) {
-        controller->lamp_on = false;
-        return;
-    }
-
     if (input->vehicle_speed_kph < AHC_MIN_SPEED_KPH) {
         controller->lamp_on = false;
         controller->dark_count = 0u;

@@ -16,8 +16,8 @@ AHC_Input BaseInput() {
     return input;
 }
 
-void UpdateNTimes(AHC_Controller* controller, const AHC_Input& input, int times, uint32_t elapsed_ms = 100) {
-    for (int i = 0; i < times; ++i) {
+void UpdateNTimes(AHC_Controller* controller, const AHC_Input& input, int update_count, uint32_t elapsed_ms = 100) {
+    for (int i = 0; i < update_count; ++i) {
         AHC_Update(controller, &input, elapsed_ms);
     }
 }
