@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded C AI Agent Benchmark - ACC</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --warning-color: #fbbc04;
+            --danger-color: #ea4335;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #202124;
+            --border-color: #dadce0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #4285f4);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        nav {
+            background: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        nav a:hover {
+            background: #e8f0fe;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .card h3 {
+            color: var(--text-color);
+            margin: 20px 0 15px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e8eaed);
+            border-radius: 8px;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-card .label {
+            color: #5f6368;
+            margin-top: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        table th {
+            background: #f1f3f4;
+            font-weight: 600;
+        }
+        
+        table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .badge-primary { background: #e8f0fe; color: var(--primary-color); }
+        .badge-success { background: #e6f4ea; color: var(--secondary-color); }
+        .badge-warning { background: #fef7e0; color: #e37400; }
+        .badge-danger { background: #fce8e6; color: var(--danger-color); }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        .state-diagram {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .state-diagram svg {
+            max-width: 100%;
+        }
+        
+        .checklist {
+            list-style: none;
+        }
+        
+        .checklist li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .flow-step .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .flow-step .step-content {
+            flex: 1;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background: #e8f0fe;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .alert-warning {
+            background: #fef7e0;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .alert-danger {
+            background: #fce8e6;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #5f6368;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚗 Embedded C AI Agent Benchmark</h1>
+        <p>アダプティブクルーズコントロール（ACC）実装課題</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#overview">概要</a></li>
+                <li><a href="#requirements">要求仕様</a></li>
+                <li><a href="#architecture">アーキテクチャ</a></li>
+                <li><a href="#scoring">採点基準</a></li>
+                <li><a href="#setup">セットアップ</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Overview Section -->
+        <section id="overview" class="card">
+            <h2>📋 概要</h2>
+            <p>本ベンチマークは、AIエージェント（コード生成AI）が車載組み込みソフトウェアの設計・実装・テストを自律的に行う能力を評価するために設計されています。</p>
+            
+            <div class="grid" style="margin-top: 25px;">
+                <div class="stat-card">
+                    <div class="number">17</div>
+                    <div class="label">機能要求数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">4</div>
+                    <div class="label">状態数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">200</div>
+                    <div class="label">満点</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">60+</div>
+                    <div class="label">テストケース数</div>
+                </div>
+            </div>
+            
+            <h3>評価対象</h3>
+            <ul class="checklist">
+                <li>要求仕様の正確な理解と解釈</li>
+                <li>適切なアーキテクチャ設計</li>
+                <li>状態遷移ロジックの実装</li>
+                <li>制御アルゴリズムの実装</li>
+                <li>境界条件・異常系の考慮</li>
+                <li>テストコードの網羅性</li>
+            </ul>
+        </section>
+        
+        <!-- Requirements Section -->
+        <section id="requirements" class="card">
+            <h2>📄 要求仕様ハイライト</h2>
+            
+            <h3>状態遷移（FR-001, FR-002）</h3>
+            <div class="state-diagram">
+                <pre style="background: #fff; color: #333; text-align: left;">
+     ┌─────────────────────────────────────────────────────┐
+     │                                                     │
+     ▼                                                     │
+ [STANDBY] ───ACC ON && speed≥30 && shift=D───▶ [ACTIVE] ─┤
+     ▲                                            │    │   │
+     │                                            │    │   │
+     │ ◄──── ACC OFF / shift≠D ───────────────────┘    │   │
+     │                                                  │   │
+     │                      brake>10N / accel_over ────▶│   │
+     │                                                  │   │
+     │ ◄─── speed&lt;25 ───────────────────────────────────┤   │
+     │                                                  │   │
+     │                                           [OVERRIDE]─┤
+     │                                              │       │
+     │ ◄────── release && 2s && speed≥25 ──────────┘       │
+     │                                                     │
+     │                    sensor_fault                     │
+     └──────────── reset ◄─── [FAULT] ◄────────────────────┘
+                </pre>
+            </div>
+            
+            <h3>主要な機能要求</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>要求ID</th>
+                        <th>機能</th>
+                        <th>難易度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FR-002</td>
+                        <td>状態遷移条件（複数AND条件）</td>
+                        <td><span class="badge badge-danger">高</span></td>
+                    </tr>
+                    <tr>
+                        <td>FR-005</td>
+                        <td>車速維持制御（加速のみ、減速なし）</td>
+                        <td><span class="badge badge-warning">中</span></td>
+                    </tr>
+                    <tr>
+                        <td>FR-007</td>
+                        <td>先行車追従制御（PD制御）</td>
+                        <td><span class="badge badge-danger">高</span></td>
+                    </tr>
+                    <tr>
+                        <td>FR-009</td>
+                        <td>緊急制動（TTC計算）</td>
+                        <td><span class="badge badge-danger">高</span></td>
+                    </tr>
+                    <tr>
+                        <td>FR-012</td>
+                        <td>オーバーライド復帰（2秒タイマー）</td>
+                        <td><span class="badge badge-warning">中</span></td>
+                    </tr>
+                    <tr>
+                        <td>FR-013</td>
+                        <td>センサフォルト検出（タイムアウト）</td>
+                        <td><span class="badge badge-warning">中</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="alert alert-warning">
+                <strong>⚠️ 注意すべき抜け漏れポイント</strong>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>単位系の混在（km/h, m/s, m/s²）</li>
+                    <li>「以上」「未満」の境界条件（30km/h以上, 25km/h未満）</li>
+                    <li>車速維持制御は「減速しない」という消極的要件</li>
+                    <li>オーバーライド復帰タイマーのリセット条件</li>
+                    <li>TTC計算時の離反（相対速度≥0）ケース</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Architecture Section -->
+        <section id="architecture" class="card">
+            <h2>🏗️ アーキテクチャ概要</h2>
+            
+            <h3>モジュール構成</h3>
+            <pre>
+┌──────────────────────────────────────────────────────────┐
+│                    ACC_Controller                        │
+├──────────────────────────────────────────────────────────┤
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐ │
+│  │ StateMgr │  │ SpeedCtrl│  │ GapCtrl  │  │ Emergency│ │
+│  │(状態管理)│  │(車速制御)│  │(車間制御)│  │(緊急制動)│ │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘ │
+│  ┌──────────┐  ┌──────────┐                             │
+│  │ Override │  │ FaultMgr │                             │
+│  │(介入検出)│  │(故障管理)│                             │
+│  └──────────┘  └──────────┘                             │
+├──────────────────────────────────────────────────────────┤
+│                  Arbitration Layer                       │
+│              (加速度要求の調停・選択)                    │
+└──────────────────────────────────────────────────────────┘</pre>
+            
+            <h3>API設計</h3>
+            <pre>
+<span style="color:#569cd6">void</span> ACC_Init(ACC_Controller* ctrl);
+<span style="color:#569cd6">void</span> ACC_Update(ACC_Controller* ctrl, <span style="color:#569cd6">const</span> ACC_Input* input, <span style="color:#569cd6">uint32_t</span> elapsed_ms);
+ACC_Output ACC_GetOutput(<span style="color:#569cd6">const</span> ACC_Controller* ctrl);</pre>
+        </section>
+        
+        <!-- Scoring Section -->
+        <section id="scoring" class="card">
+            <h2>📊 採点基準</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>カテゴリ</th>
+                        <th>配点</th>
+                        <th>主な評価項目</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>要求理解</strong></td>
+                        <td>30点</td>
+                        <td>機能要求の網羅性、暗黙的要求の抽出</td>
+                    </tr>
+                    <tr>
+                        <td><strong>アーキテクチャ</strong></td>
+                        <td>25点</td>
+                        <td>モジュール分割、インターフェース設計</td>
+                    </tr>
+                    <tr>
+                        <td><strong>詳細設計</strong></td>
+                        <td>25点</td>
+                        <td>状態遷移設計、アルゴリズム設計</td>
+                    </tr>
+                    <tr>
+                        <td><strong>実装</strong></td>
+                        <td>60点</td>
+                        <td>機能実装（45点）、コード品質（15点）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>テスト</strong></td>
+                        <td>40点</td>
+                        <td>機能テスト、境界値テスト、異常系テスト</td>
+                    </tr>
+                    <tr>
+                        <td><strong>非機能</strong></td>
+                        <td>20点</td>
+                        <td>C99準拠、動的メモリ禁止、再入可能性</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background: #e8f0fe;">
+                        <td>合計</td>
+                        <td>200点</td>
+                        <td>+ ボーナス10点（全テスト通過時）</td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <h3>減点ルール</h3>
+            <div class="grid">
+                <div class="alert alert-danger">
+                    <strong>重大な欠陥（-20点/件）</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>緊急制動が動作しない</li>
+                        <li>フォルト時に制御が継続</li>
+                        <li>状態遷移のデッドロック</li>
+                    </ul>
+                </div>
+                <div class="alert alert-warning">
+                    <strong>中程度の欠陥（-10点/件）</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>車速維持時に減速要求</li>
+                        <li>オーバーライド復帰タイミング誤り</li>
+                        <li>車間警告閾値の誤り</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Setup Section -->
+        <section id="setup" class="card">
+            <h2>🛠️ セットアップ</h2>
+            
+            <h3>ベンチマーク実行手順</h3>
+            
+            <div class="flow-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>環境準備</strong>
+                    <pre>git clone https://github.com/your-org/BenchmarkPrj.git
+cd BenchmarkPrj</pre>
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>AIエージェントへの入力</strong>
+                    <p>以下のファイルのみをAIエージェントに提供:</p>
+                    <code>docs/requirements_specification.md</code>
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>AIエージェントの出力</strong>
+                    <p>以下のファイルを生成させる:</p>
+                    <ul style="margin-top: 5px; padding-left: 20px;">
+                        <li><code>candidate/include/acc_controller.h</code></li>
+                        <li><code>candidate/src/acc_controller.c</code></li>
+                        <li><code>candidate/test/test_acc_controller.cpp</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flow-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <strong>評価実行</strong>
+                    <pre>./scripts/run_benchmark.sh candidate/</pre>
+                </div>
+            </div>
+            
+            <h3>ビルド・テスト</h3>
+            <pre>
+# 模範解答のビルド・テスト
+cmake -S . -B build
+cmake --build build
+ctest --test-dir build --output-on-failure
+
+# 候補コードのビルド・テスト
+./scripts/run_benchmark.sh &lt;candidate_directory&gt;</pre>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section id="faq" class="card">
+            <h2>❓ FAQ</h2>
+            
+            <details style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <summary style="cursor: pointer; font-weight: bold;">Q: AIエージェントには何を入力として渡すべきですか？</summary>
+                <p style="margin-top: 10px;">A: <code>docs/requirements_specification.md</code> のみを渡します。設計書や模範解答は渡しません。AIエージェントが要求から自律的に設計・実装することを評価します。</p>
+            </details>
+            
+            <details style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <summary style="cursor: pointer; font-weight: bold;">Q: 部分的に実装した場合のスコアはどうなりますか？</summary>
+                <p style="margin-top: 10px;">A: 実装した機能に応じて部分点が付与されます。例えば状態遷移のみ実装した場合でも、その部分の配点は獲得できます。</p>
+            </details>
+            
+            <details style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <summary style="cursor: pointer; font-weight: bold;">Q: C99以外の言語仕様を使用した場合は？</summary>
+                <p style="margin-top: 10px;">A: 非機能要求の「C99準拠」で減点（-5点）となります。ただし、機能が正しく動作していれば他の点数は獲得できます。</p>
+            </details>
+            
+            <details style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <summary style="cursor: pointer; font-weight: bold;">Q: テストコードの代わりにテスト仕様書を提出した場合は？</summary>
+                <p style="margin-top: 10px;">A: テストカテゴリ（40点）の配点が大幅に減少します。自動実行可能なGoogle Testコードを提出することを推奨します。</p>
+            </details>
+        </section>
+    </div>
+    
+    <footer>
+        <p>Embedded C AI Agent Benchmark - Adaptive Cruise Control</p>
+        <p>For AI Agent Evaluation</p>
+    </footer>
+</body>
+</html>
