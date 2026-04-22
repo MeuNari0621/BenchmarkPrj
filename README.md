@@ -31,16 +31,34 @@ AIエージェントが要求仕様書のみを参照して設計・実装・テ
 
 ## ビルドとテスト
 
+Unix系または単一構成ジェネレータ（Ninja、MinGW Makefilesなど）:
+
 ```bash
 cmake -S . -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
+Windows + Visual Studioジェネレータ:
+
+```powershell
+cmake -S . -B build
+cmake --build build --config Debug
+ctest --test-dir build -C Debug --output-on-failure
+```
+
 ## ベンチマーク実行
+
+Unix系シェル:
 
 ```bash
 ./scripts/run_benchmark.sh <candidate_directory>
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run_benchmark.ps1 .\candidate
 ```
 
 ## ドキュメント

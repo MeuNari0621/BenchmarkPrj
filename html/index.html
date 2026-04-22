@@ -555,7 +555,8 @@ cd BenchmarkPrj</pre>
                 <div class="step-number">4</div>
                 <div class="step-content">
                     <strong>評価実行</strong>
-                    <pre>./scripts/run_benchmark.sh candidate/</pre>
+                    <pre>Unix shell: ./scripts/run_benchmark.sh candidate/
+Windows PowerShell: powershell -ExecutionPolicy Bypass -File .\scripts\run_benchmark.ps1 .\candidate</pre>
                 </div>
             </div>
             
@@ -566,8 +567,11 @@ cmake -S . -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 
-# 候補コードのビルド・テスト
-./scripts/run_benchmark.sh &lt;candidate_directory&gt;</pre>
+# 候補コードのビルド・テスト (Unix shell)
+./scripts/run_benchmark.sh &lt;candidate_directory&gt;
+
+# 候補コードのビルド・テスト (Windows PowerShell)
+powershell -ExecutionPolicy Bypass -File .\scripts\run_benchmark.ps1 .\candidate</pre>
         </section>
         
         <!-- FAQ Section -->

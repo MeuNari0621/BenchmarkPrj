@@ -1,0 +1,119 @@
+{
+    "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "testAccControllerPath",
+            "type": "command",
+            "command": "cmake.launchTargetPath",
+            "args": {
+                "targetName": "test_acc_controller"
+            }
+        },
+        {
+            "id": "testAccControllerDir",
+            "type": "command",
+            "command": "cmake.getLaunchTargetDirectory",
+            "args": {
+                "targetName": "test_acc_controller"
+            }
+        }
+    ],
+    "configurations": [
+        {
+            "name": "GoogleTest Adapter Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "presentation": {
+                "hidden": true
+            },
+            "program": "${workspaceFolder}/build/test_acc_controller.exe",
+            "cwd": "${workspaceFolder}/build",
+            "args": [],
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/bin/mingw64/bin/gdb.exe",
+            "externalConsole": false,
+            "stopAtEntry": false
+        },
+        {
+            "name": "C++ TestMate Debug",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "presentation": {
+                "hidden": true
+            },
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb"
+            },
+            "darwin": {
+                "type": "cppdbg",
+                "MIMode": "lldb"
+            },
+            "win32": {
+                "type": "cppvsdbg"
+            },
+            "program": "${exec}",
+            "args": "${argsArray}",
+            "cwd": "${cwd}",
+            "env": "${envObj}",
+            "environment": "${envObjArray}",
+            "sourceFileMap": "${sourceFileMapObj}",
+            "externalConsole": false,
+            "stopAtEntry": false
+        },
+        {
+            "name": "CMake: Debug test_acc_controller",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb"
+            },
+            "darwin": {
+                "type": "cppdbg",
+                "MIMode": "lldb"
+            },
+            "win32": {
+                "type": "cppvsdbg"
+            },
+            "program": "${input:testAccControllerPath}",
+            "cwd": "${input:testAccControllerDir}",
+            "args": [],
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${env:PATH};${input:testAccControllerDir}"
+                }
+            ],
+            "externalConsole": false,
+            "stopAtEntry": false
+        },
+        {
+            "name": "CMake: Debug CTest",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "presentation": {
+                "hidden": true
+            },
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb"
+            },
+            "darwin": {
+                "type": "cppdbg",
+                "MIMode": "lldb"
+            },
+            "win32": {
+                "type": "cppvsdbg"
+            },
+            "program": "${cmake.testProgram}",
+            "args": [
+                "${cmake.testArgs}"
+            ],
+            "cwd": "${cmake.testWorkingDirectory}",
+            "environment": "${cmake.testEnvironment}",
+            "externalConsole": false,
+            "stopAtEntry": false
+        }
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "cmake.additionalCompilerSearchDirs": [
+        "C:/bin/mingw64/bin"
+    ],
+    "cmake.buildBeforeRun": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnOpen": true,
+    "cmake.configureSettings": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+    },
+    "cmake.ctest.debugLaunchTarget": "CMake: Debug CTest",
+    "cmake.ctest.testExplorerIntegrationEnabled": true,
+    "cmake.generator": "MinGW Makefiles",
+    "cmake.setBuildTargetSameAsLaunchTarget": true,
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "googletest.failed",
+                "settings": {
+                    "foreground": "#f00"
+                }
+            },
+            {
+                "scope": "googletest.passed",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            },
+            {
+                "scope": "googletest.run",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            }
+        ]
+    },
+    "testMate.cpp.debug.configTemplate": "name:C++ TestMate Debug",
+    "testMate.cpp.discovery.loadOnStartup": true,
+    "testMate.cpp.test.advancedExecutables": [
+        {
+            "pattern": "build/**/*test_acc_controller*",
+            "cwd": "${absDirpath}",
+            "waitForBuildProcess": true,
+            "win32": {
+                "pattern": "build/**/*test_acc_controller*.exe"
+            }
+        }
+    ],
+    "testMate.cpp.test.parallelExecutionLimit": 1,
+    "gtest-adapter.debugConfig": [
+        "GoogleTest Adapter Debug",
+        "C++ TestMate Debug",
+        "CMake: Debug test_acc_controller",
+        "CMake: Debug CTest"
+    ],
+    "gtest-adapter.supportLocation": true
+}
